@@ -1,0 +1,22 @@
+§14,15강_스프링MVC웹서비스
+
+14-1.웹서버(Tomcat)다운로드
+    Tomcat사이트->8ver.zip 다운
+
+14-2.웹서버(Tomcat)와 이클립스 연동
+    이클립스 Server -> apach-tomcat-8.5.24등록
+    서버설정 -> ServerLocations : Use Tomcat installation 체크
+                    ServerOptions : Publish module contexts to separate XML files 체크
+                    Ports(HTTP/1.1)번호 : 8090으로 변경
+
+14-3.이클립스에 플러그인 STS(Spring Tool Suit)설치
+    [Help]->[Eclipse Marketplace..]->[Find:sts검색]->Tools체크,Confirm
+
+14-4.STS를 이용한 웹프로젝트 생성
+    [New]->[Other...]->[spring Legacy Project]->[Spring MVC Project]
+
+15강 전체 ==>★PDF★
+
+    
+§16강_플러그인(STS) 사용하지않고 만들어보기
+    필요시 pdf파일 참고하세요..
