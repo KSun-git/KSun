@@ -1,0 +1,74 @@
+-§의존객체
+--8-1.스프링 설정파일 분리
+    기능에따라 xml설정파일을 나눈다.
+    방법1)설정파일들을 배열로 load
+    방법2)하나의 통합xml에 부가설정파일을 import
+            <import resource="classpath:??.xml"/>
+
+--8-2.빈(Bean)의 범위
+    자바에서는 New를 이용할때마다 객체를 생성해서 사용한다.
+    스프링에서는
+    1)싱글톤
+      스프링컨테이너에서 생성된 빈(Bean)객체의 경우 동일한 타입에 대해서는
+      기본적으로 한 개만 생성되며, getBean()메소드로 호출될 때 동일한 객체가 반환(참조)된다.
+    2)프로토타입
+      싱글톤 범위와 반대의 개념을 프로토타입(Prototype)범위라고 한다. 이 경우는 개발자가 별도로
+      설정해준 경우인데, 빈 객체를 정의할 때 scope속성을 명시해 주면 된다.
+      <bean id="dependencyBean" class="scope.ex.DependencyBean"
+                scope="prototype">
+               ㆍㆍㆍ
+      </bean>
+
+--9-1.의존객체 자동주입
+    의존객체 주입 시 <constructor-org>, <property>태그로 의존설정을 명시하지않아도
+    스프링 컨테이너가 자동으로 의존대상 객체를 찾아서 주입해주는 기능
+    개발자는 @Autowired와 @Resource 설정만 해주면 된다.
+
+--9-2.@Autowired
+    주입하려고 하는 객체의 타입이 일치하는 객체를 자동으로 주입한다.
+    ※xml에 <context:annotation-config /> 등록 필수
+    ※프로퍼티or메소드에 Autowired 사용하려면 클래스의 기본생성자가 반드시 명시되어있어야한다.
+
+--9-3.@Resource
+    주입하려고 하는 객체의 이름이 일치하는 객체를 자동으로 주입힌다.
+    ※resource는 프로퍼티or메소드에서만 사용가능(기본생성자 반드시 명시)
+
+--10-1.의존객체 선택
+    @Autowired 자동주입시에 동일한 객체가 2개 이상일 경우, 스프링 컨테이너는 자동주입 대상 
+    객체를 판단하지못하여 Exception을 발생시킨다.
+    =>@Qualifier어노테이션을통해 의존객체를 선택해준다.
+             XML 빈객체 안 : <qualifier value="사용할이름" />
+             주입위치 : @Autowired
+                          @Qualifier("설정한이름")
+
+--10-2.의존객체 자동 주입 체크(실제코딩시 이런식으로 사용하지는 않습니다)
+    @Autowired(required=false) : 의존객체 있으면 주입, 없으면 패스(예외발생X)
+
+--10-3.@Inject
+    Autowired와 동일한 특징이지만, required속성을 지원하지않음.
+    @Qualifier어노테이션 대신 @Named(value="빈객체아이디명")사용
+
+
+-§설정 및 구현
+--11-1.스프링 컨테이너 생명주기
+    GenericXmlApplicationContext를 이용한 스프링 컨테이너 초기화(생성) & Bean객체생성
+                       ↓
+    getBean()을 이용한 빈(Bean)객체 이용
+                       ↓
+    ctx.close()을 이용한 스프링컨테이너 종료&Bean객체소멸
+
+--11-2.빈(Bean)객체 생명주기
+    빈(Bean)객체는 스프링 컨테이너와 함께 생성되어 주입되고, 컨테이너가 종료될때 소멸된다.
+    빈(Bean)객체의 생성시점에 작동하는 메소드 생성
+        <<Interface>>InitializingBean ->afterPropertiesSet()
+    빈(Bean)객체의 소멸시점에 작동하는 메소드 생성
+        <<Interface>>DisposableBean ->destroy()
+
+--11-3.생성,소멸시점에 작동 메소드생성하는 다른방법
+    Bean객체에 init-method , destroy-method 속성 직접설정하여 사용
+
+
+--12-1.어노테이션을 이용한 스프링 설정(XML파일을 JAVA파일로)
+    @Configuration : JAVA파일을 스프링설정파일처럼 동작시킴
+    @Bean : 빈객체생성 메소드
+    GenericXmlApplicationContext이용 => AnnotationConfigApplicationContext
